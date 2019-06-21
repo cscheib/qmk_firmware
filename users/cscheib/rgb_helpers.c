@@ -17,22 +17,26 @@ void rgb_matrix_layer_helper (uint8_t red, uint8_t green, uint8_t blue, bool def
 
 void rgb_matrix_switch_layer_helper (void) {
 
-    for(int column = 0;  column < MATRIX_COLS; column++) {
+    for(int row = 0;  row < MATRIX_ROWS; row++) {
         for(int column = 0;  column < MATRIX_COLS; column++) {
             // convert ROW COL pair to LED ID
+            int key_id = layer_switch_get_layer(row, col); //TODO: determine order in which to row, col go
+            rgb_matrix_layer_render_key(key_id); // TODO: remove key_id and pass result directly from get_layer
         }
     }
     layer_switch_get_layer(ROW, COL);
+}
 
-    switch (layer_switch_get_layer(key_led_index)) {
+void rgb_matrix_layer_render_key(int key_id) {
+    switch (led_id) {
         case _BASE:
-        rgb_matrix_set_color(key_led_index, 0xFF, 0x00, 0x00); break;
+        rgb_matrix_set_color(led_id, 0xFF, 0x00, 0x00); break; //TODO: attempt to use the color constants here
         case _LAYER1:
-        rgb_matrix_set_color(key_led_index, 0x00, 0xFF, 0x00); break;
+        rgb_matrix_set_color(led_id, 0x00, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
         case _LAYER2:
-        rgb_matrix_set_color(key_led_index, 0x00, 0x00, 0xFF); break;
+        rgb_matrix_set_color(led_id, 0x00, 0x00, 0xFF); break; //TODO: attempt to use the color constants here
         case _LAYER3:
-        rgb_matrix_set_color(key_led_index, 0xFF, 0xFF, 0x00); break;
+        rgb_matrix_set_color(led_id, 0xFF, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
     }
 }
 
