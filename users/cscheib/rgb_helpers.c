@@ -15,19 +15,42 @@ void rgb_matrix_layer_helper (uint8_t red, uint8_t green, uint8_t blue, bool def
   }
 }
 
+void rgb_matrix_switch_layer_helper (void) {
+
+    for(int column = 0;  column < MATRIX_COLS; column++) {
+        for(int column = 0;  column < MATRIX_COLS; column++) {
+            // convert ROW COL pair to LED ID
+        }
+    }
+    layer_switch_get_layer(ROW, COL);
+
+    switch (layer_switch_get_layer(key_led_index)) {
+        case _BASE:
+        rgb_matrix_set_color(key_led_index, 0xFF, 0x00, 0x00); break;
+        case _LAYER1:
+        rgb_matrix_set_color(key_led_index, 0x00, 0xFF, 0x00); break;
+        case _LAYER2:
+        rgb_matrix_set_color(key_led_index, 0x00, 0x00, 0xFF); break;
+        case _LAYER3:
+        rgb_matrix_set_color(key_led_index, 0xFF, 0xFF, 0x00); break;
+    }
+}
+
 void rgb_matrix_indicators_user(void) {
     uint8_t this_led = host_keyboard_leds();
     if (!g_suspend_state) {
-        switch (biton32(layer_state)) {
-            case _BASE:
-            rgb_matrix_layer_helper(0xFF, 0x00, 0x00, false); break;
-            case _LAYER1:
-            rgb_matrix_layer_helper(0x00, 0xFF, 0x00, false); break;
-            case _LAYER2:
-            rgb_matrix_layer_helper(0x00, 0x00, 0xFF, false); break;
-            case _LAYER3:
-            rgb_matrix_layer_helper(0xFF, 0xFF, 0x00, false); break;
-        }
+        // switch (biton32(layer_state)) {
+        //     case _BASE:
+        //     rgb_matrix_layer_helper(0xFF, 0x00, 0x00, false); break;
+        //     case _LAYER1:
+        //     rgb_matrix_layer_helper(0x00, 0xFF, 0x00, false); break;
+        //     case _LAYER2:
+        //     rgb_matrix_layer_helper(0x00, 0x00, 0xFF, false); break;
+        //     case _LAYER3:
+        //     rgb_matrix_layer_helper(0xFF, 0xFF, 0x00, false); break;
+        // }
+
+        rgb_matrix_switch_layer_helper();
     }
     if ( this_led & (1<<USB_LED_CAPS_LOCK)) {
         rgb_matrix_set_color(40, 0xFF, 0xFF, 0xFF);
