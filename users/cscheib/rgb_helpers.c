@@ -24,7 +24,6 @@ void rgb_matrix_switch_layer_helper (void) {
             rgb_matrix_layer_render_key(key_id); // TODO: remove key_id and pass result directly from get_layer
         }
     }
-    layer_switch_get_layer(ROW, COL);
 }
 
 void rgb_matrix_layer_render_key(int key_id) {
