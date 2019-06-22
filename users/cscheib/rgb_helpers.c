@@ -47,11 +47,12 @@ void rgb_matrix_switch_layer_helper (void) {
             keypos.row = row;
             keypos.col = column;
             uint8_t led_index = g_led_config.matrix_co[row][column];
-            if(!is_keycode_kcno(keypos)) {
-                rgb_matrix_layer_render_key(led_index, layer_switch_get_layer(keypos));
+
+            if(is_keycode_kcno(keypos)) {
+                rgb_matrix_set_color(led_index, RGB_OFF); //set color to black for now
             }
             else {
-                rgb_matrix_set_color(led_index, RGB_OFF); //set color to black for now
+                rgb_matrix_layer_render_key(led_index, layer_switch_get_layer(keypos));
             }
         }
     }
