@@ -7,57 +7,45 @@
 
 #ifdef RGB_MATRIX_ENABLE
 
-void rgb_matrix_layer_helper (uint8_t red, uint8_t green, uint8_t blue, bool default_layer) {
-  for (int i = 0; i < DRIVER_LED_TOTAL; i++) {
-    if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_KEYLIGHT)) {
-        rgb_matrix_set_color( i, red, green, blue );
+void rgb_matrix_layer_render_key(uint8_t led_index, uint8_t switch_layer) {
+    dprintf("rendering led index: %u, switch layer: %u", led_index, switch_layer);
+    switch (switch_layer) {
+        case _BASE:
+        rgb_matrix_set_color(led_index, 0xFF, 0x00, 0x00); break; //TODO: attempt to use the color constants here
+        case _LAYER1:
+        rgb_matrix_set_color(led_index, 0x00, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
+        case _LAYER2:
+        rgb_matrix_set_color(led_index, 0x00, 0x00, 0xFF); break; //TODO: attempt to use the color constants here
+        case _LAYER3:
+        rgb_matrix_set_color(led_index, 0xFF, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
     }
-  }
 }
 
 void rgb_matrix_switch_layer_helper (void) {
 
-    for(int row = 0;  row < MATRIX_ROWS; row++) {
-        for(int column = 0;  column < MATRIX_COLS; column++) {
-            // convert ROW COL pair to LED ID
-            int key_id = layer_switch_get_layer(row, col); //TODO: determine order in which to row, col go
-            rgb_matrix_layer_render_key(key_id); // TODO: remove key_id and pass result directly from get_layer
+    for(uint8_t row = 0;  row < MATRIX_ROWS; row++) {
+        for(uint8_t column = 0;  column < MATRIX_COLS; column++) {
+            dprintf("scanning switch layer: row: %u, column %u\n", row, column);
+
+            // actions:
+            // * iterate over whole matrix [x]
+            // * get keypos_t object for key: (keypos_t){ .row = row, .col = column } [x]
+            // * get switch layer: layer_switch_get_layer(keypos_t)
+            // * get led id: g_led_config.matrix_co[row][col]
+            keypos_t keypos;
+            keypos.row = row;
+            keypos.col = column;
+            uint8_t led_index = g_led_config.matrix_co[row][column];
+            rgb_matrix_layer_render_key(led_index, layer_switch_get_layer(keypos));
         }
     }
 }
 
-void rgb_matrix_layer_render_key(int key_id) {
-    switch (led_id) {
-        case _BASE:
-        rgb_matrix_set_color(led_id, 0xFF, 0x00, 0x00); break; //TODO: attempt to use the color constants here
-        case _LAYER1:
-        rgb_matrix_set_color(led_id, 0x00, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
-        case _LAYER2:
-        rgb_matrix_set_color(led_id, 0x00, 0x00, 0xFF); break; //TODO: attempt to use the color constants here
-        case _LAYER3:
-        rgb_matrix_set_color(led_id, 0xFF, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
-    }
-}
-
 void rgb_matrix_indicators_user(void) {
-    uint8_t this_led = host_keyboard_leds();
-    if (!g_suspend_state) {
-        // switch (biton32(layer_state)) {
-        //     case _BASE:
-        //     rgb_matrix_layer_helper(0xFF, 0x00, 0x00, false); break;
-        //     case _LAYER1:
-        //     rgb_matrix_layer_helper(0x00, 0xFF, 0x00, false); break;
-        //     case _LAYER2:
-        //     rgb_matrix_layer_helper(0x00, 0x00, 0xFF, false); break;
-        //     case _LAYER3:
-        //     rgb_matrix_layer_helper(0xFF, 0xFF, 0x00, false); break;
-        // }
-
-        rgb_matrix_switch_layer_helper();
-    }
-    if ( this_led & (1<<USB_LED_CAPS_LOCK)) {
-        rgb_matrix_set_color(40, 0xFF, 0xFF, 0xFF);
-    }
+    // uint8_t this_led = host_keyboard_leds();
+    rgb_matrix_switch_layer_helper();
 }
+
+
 
 #endif
