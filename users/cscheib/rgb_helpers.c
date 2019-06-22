@@ -1,9 +1,12 @@
 #include QMK_KEYBOARD_H
+#include <rgblight_list.h>
 
 #define _BASE   0
 #define _LAYER1 1
 #define _LAYER2 2
 #define _LAYER3 3
+
+#define RGB_OFF 0x00, 0x00, 0x00
 
 #ifdef RGB_MATRIX_ENABLE
 
@@ -17,13 +20,13 @@ bool is_keycode_kcno(keypos_t keypos) {
 void rgb_matrix_layer_render_key(uint8_t led_index, uint8_t switch_layer) {
     switch (switch_layer) {
         case _BASE:
-        rgb_matrix_set_color(led_index, 0xFF, 0x00, 0x00); break; //TODO: attempt to use the color constants here
+        rgb_matrix_set_color(led_index, RGB_ORANGE); break; //TODO: attempt to use the color constants here
         case _LAYER1:
-        rgb_matrix_set_color(led_index, 0x00, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
+        rgb_matrix_set_color(led_index, RGB_GREEN); break; //TODO: attempt to use the color constants here
         case _LAYER2:
-        rgb_matrix_set_color(led_index, 0x00, 0x00, 0xFF); break; //TODO: attempt to use the color constants here
+        rgb_matrix_set_color(led_index, RGB_BLUE); break; //TODO: attempt to use the color constants here
         case _LAYER3:
-        rgb_matrix_set_color(led_index, 0xFF, 0xFF, 0x00); break; //TODO: attempt to use the color constants here
+        rgb_matrix_set_color(led_index, RGB_YELLOW); break; //TODO: attempt to use the color constants here
     }
 }
 
@@ -48,14 +51,13 @@ void rgb_matrix_switch_layer_helper (void) {
                 rgb_matrix_layer_render_key(led_index, layer_switch_get_layer(keypos));
             }
             else {
-                rgb_matrix_set_color(led_index, 0x00, 0x00, 0x00); //set color to white for now
+                rgb_matrix_set_color(led_index, RGB_OFF); //set color to black for now
             }
         }
     }
 }
 
 void rgb_matrix_indicators_user(void) {
-    // uint8_t this_led = host_keyboard_leds();
     rgb_matrix_switch_layer_helper();
 }
 
